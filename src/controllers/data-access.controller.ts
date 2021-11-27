@@ -30,12 +30,12 @@ import { Record } from 'src/data/database';
 export class DataAccessController {
   constructor(private db: DataAccessService) {}
 
-  @Get('table/:table/info')
+  @Get(':table/info')
   async tableInfo(@Param('table') table: string): Promise<any> {
     return await this.db.tableInfo(table);
   }
 
-  @Get('table/:table')
+  @Get(':table')
   async index(
     @Param('table') table: string,
     @Query('pageIndex') pageIndex = 0,
@@ -44,7 +44,7 @@ export class DataAccessController {
     return await this.db.index(table, pageIndex, pageSize);
   }
 
-  @Post('table/:table')
+  @Post(':table')
   async createRecord(
     @Param('table') table: string,
     @Body() record: Record,
@@ -52,7 +52,7 @@ export class DataAccessController {
     return await this.db.insert(table, record);
   }
 
-  @Get('table/:table/record/:id')
+  @Get(':table/record/:id')
   async getRecordbyId(
     @Param('table') table: string,
     @Param('id', ParseIntPipe) id: number,
@@ -60,7 +60,7 @@ export class DataAccessController {
     return await this.db.selectSingleById(table, id);
   }
 
-  @Get('table/:table/record/:id/column/:column')
+  @Get(':table/record/:id/column/:column')
   async getColumnFromRecordbyId(
     @Param('table') table: string,
     @Param('id', ParseIntPipe) id: number,
@@ -69,7 +69,7 @@ export class DataAccessController {
     return await this.db.getColumnFromRecordbyId(table, id, column);
   }
 
-  @Patch('table/:table/record/:id/column/:column')
+  @Patch(':table/record/:id/column/:column')
   async updateColumnForRecordById(
     @Param('table') table: string,
     @Param('id', ParseIntPipe) id,
@@ -79,7 +79,7 @@ export class DataAccessController {
     return await this.db.updateColumnForRecordById(table, id, column, value);
   }
 
-  @Put('table/:table/record/:id')
+  @Put(':table/record/:id')
   async updateRecord(
     @Param('table') table: string,
     @Param('id', ParseIntPipe) id,
@@ -88,7 +88,7 @@ export class DataAccessController {
     return await this.db.update(table, id, record);
   }
 
-  @Delete('table/:table/record/:id')
+  @Delete(':table/record/:id')
   async deleteRecord(
     @Param('table') table: string,
     @Param('id', ParseIntPipe) id,
@@ -96,7 +96,7 @@ export class DataAccessController {
     return await this.db.delete(table, id);
   }
 
-  @Post('table/:table')
+  @Post(':table')
   async createTable(
     @Param('table') table: string,
     @Body() columns: ColumnDescription[],

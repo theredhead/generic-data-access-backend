@@ -1,5 +1,5 @@
 import { MySqlDatabase } from '../src/data/mysql/mysql-database';
-import { config } from '../test/db.conf';
+import { databaseConfiguration } from '../src/db.conf';
 
 describe('MysqlDatabase', () => {
   let database: MySqlDatabase;
@@ -11,7 +11,7 @@ describe('MysqlDatabase', () => {
   ];
 
   beforeEach(() => {
-    database = new MySqlDatabase(config);
+    database = new MySqlDatabase(databaseConfiguration);
   });
 
   it('can create a table and ', async () => {

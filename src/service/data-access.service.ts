@@ -1,11 +1,11 @@
-import { config } from './../../test/db.conf';
+import { databaseConfiguration } from '../db.conf';
 import { MySqlDatabase } from './../data/mysql/mysql-database';
 import { Record } from 'src/data/database';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DataAccessService {
-  private db = new MySqlDatabase(config);
+  private db = new MySqlDatabase(databaseConfiguration);
 
   async tableInfo(table: string): Promise<any> {
     const data = await this.db.execute(
