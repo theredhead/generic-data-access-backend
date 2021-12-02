@@ -5,7 +5,6 @@ export interface FetchRequest {
 }
 
 export interface FetchSimplePredicteClause {
-  type: undefined;
   text: string;
   args: any[];
 }

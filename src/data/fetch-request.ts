@@ -9,12 +9,16 @@ export class FetchRequestSQLWriter {
   write(request: FetchRequest) {
     const args = [];
     const text = [
-      'SELECT *',
+      'SELECT * ',
       'FROM ' + request.table,
-      'WHEER',
-      ...request.predicates.map((p) => this.expandPredicate(p, args)),
-      this.expandSort(request.sort),
-    ].join('\n');
+      request.predicates.length > 0 ? 'WHERE' : null,
+      request.predicates
+        .map((p) => this.expandPredicate(p, args))
+        .join(' AND '),
+      request.sort.length > 0 ? this.expandSort(request.sort) : null,
+    ]
+      .filter((o) => o != null)
+      .join('\n');
 
     return { text, args };
   }
@@ -34,7 +38,7 @@ export class FetchRequestSQLWriter {
   }
   expandSimplePredicateClause(clause: FetchSimplePredicteClause, args: any[]) {
     args.push(clause.args);
-    return clause.text;
+    return `(${clause.text})`;
   }
 
   expandCompoundPredicateClause(
