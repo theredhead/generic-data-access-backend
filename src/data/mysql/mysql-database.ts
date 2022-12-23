@@ -1,5 +1,5 @@
-import { Database, Record, RecordSet } from './../database';
 import * as mysql2 from 'mysql2';
+import { Database, Record, RecordSet } from './../database';
 
 /** @format */
 
@@ -129,6 +129,8 @@ export class MySqlDatabase implements Database {
             resolve(result);
           } catch (throwable) {
             reject(throwable);
+          } finally {
+            cn.release();
           }
         });
         // this.pool.releaseConnection(cn);
