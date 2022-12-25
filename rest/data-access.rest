@@ -3,3 +3,6 @@ GET http://localhost:3000/api/data-access/table/test?pageIndex=2&pageSize=3
 
 GET http://localhost:3000/api/data-access/table/member/info
 
+
+GET http://localhost:3000/api/status
+

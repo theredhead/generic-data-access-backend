@@ -1,7 +1,9 @@
+import { FetchRequest } from './../data/fetch-predicate.types';
 import {
-  DataAccessService,
   ColumnDescription,
+  DataAccessService,
 } from './../service/data-access.service';
+import { FetchRequestHandlerService } from './../service/fetch-request-handler.service';
 
 import {
   Body,
@@ -28,7 +30,21 @@ import { Record } from 'src/data/database';
  */
 @Controller('api/data-access')
 export class DataAccessController {
-  constructor(private db: DataAccessService) {}
+  constructor(
+    private db: DataAccessService,
+    private fetchRequestHandler: FetchRequestHandlerService,
+  ) {}
+
+  @Post('fetch')
+  async fetch(@Body() request: FetchRequest) {
+    try {
+      return await this.fetchRequestHandler.handleRequest(request);
+    } catch (error) {
+      return {
+        error,
+      };
+    }
+  }
 
   @Get(':table/info')
   async tableInfo(@Param('table') table: string): Promise<any> {

@@ -1,7 +1,13 @@
 export interface FetchRequest {
   table: string;
-  predicates: FetchPredicte;
+  predicates: FetchPredicate;
   sort: Sort;
+  pagination?: FetchRequestPagination;
+}
+
+export interface FetchRequestPagination {
+  size: number;
+  index: number;
 }
 
 export interface FetchSimplePredicteClause {
@@ -11,14 +17,14 @@ export interface FetchSimplePredicteClause {
 
 export interface FetchCompoundPredicteClause {
   type: 'AND' | 'OR';
-  predicates: FetchPredicte;
+  predicates: FetchPredicate;
 }
 
 export type FetchPredicteClause =
   | FetchSimplePredicteClause
   | FetchCompoundPredicteClause;
 
-export type FetchPredicte = FetchPredicteClause[];
+export type FetchPredicate = FetchPredicteClause[];
 
 export type Sort = SortClause[];
 

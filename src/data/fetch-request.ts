@@ -1,29 +1,41 @@
-import { FetchRequest, Sort } from './fetch-predicate.types';
+import { Logger } from '@nestjs/common';
 import {
   FetchCompoundPredicteClause,
   FetchPredicteClause,
+  FetchRequest,
   FetchSimplePredicteClause,
+  Sort,
 } from './fetch-predicate.types';
 
 export class FetchRequestSQLWriter {
+  private logger = new Logger('FetchRequestSQLWriter');
+
+  quote(objectName: string): string {
+    return ['`', objectName, '`'].join('');
+  }
+
   write(request: FetchRequest) {
     const args = [];
     const text = [
       'SELECT * ',
-      'FROM ' + request.table,
+      'FROM ' + this.quote(request.table),
       request.predicates.length > 0 ? 'WHERE' : null,
-      request.predicates
-        .map((p) => this.expandPredicate(p, args))
-        .join(' AND '),
+      request.predicates.length
+        ? request.predicates
+            .map((p) => this.expandPredicate(p, args))
+            .join(' AND ')
+        : null,
       request.sort.length > 0 ? this.expandSort(request.sort) : null,
+      request.pagination ? this.expandPagination(request.pagination) : null,
     ]
-      .filter((o) => o != null)
+      .filter((segment) => segment !== null)
       .join('\n');
 
+    this.logger.verbose(text);
     return { text, args };
   }
 
-  expandPredicate(clause: FetchPredicteClause, args: any[]) {
+  protected expandPredicate(clause: FetchPredicteClause, args: any[]) {
     if (clause.hasOwnProperty('type')) {
       return this.expandCompoundPredicateClause(
         <FetchCompoundPredicteClause>clause,
@@ -36,12 +48,16 @@ export class FetchRequestSQLWriter {
       );
     }
   }
-  expandSimplePredicateClause(clause: FetchSimplePredicteClause, args: any[]) {
+
+  protected expandSimplePredicateClause(
+    clause: FetchSimplePredicteClause,
+    args: any[],
+  ) {
     args.push(clause.args);
     return `(${clause.text})`;
   }
 
-  expandCompoundPredicateClause(
+  protected expandCompoundPredicateClause(
     clause: FetchCompoundPredicteClause,
     args: any[],
   ) {
@@ -54,10 +70,14 @@ export class FetchRequestSQLWriter {
     ].join('');
   }
 
-  expandSort(sort: Sort) {
+  protected expandSort(sort: Sort) {
     return [
       'ORDER BY ',
       sort.map((clause) => `${clause.column} ${clause.direction}`).join(', '),
     ].join('');
+  }
+
+  protected expandPagination(pagination: { index: number; size: number }) {
+    return `LIMIT ${pagination.index * pagination.size}, ${pagination.size}`;
   }
 }

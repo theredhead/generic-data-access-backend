@@ -1,7 +1,7 @@
+import { Injectable } from '@nestjs/common';
+import { Record } from 'src/data/database';
 import { databaseConfiguration } from '../db.conf';
 import { MySqlDatabase } from './../data/mysql/mysql-database';
-import { Record } from 'src/data/database';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DataAccessService {
@@ -82,6 +82,10 @@ export class DataAccessService {
 
     return script;
     // await this.db.execute(script);
+  }
+
+  async execute(text: string, args: any[]) {
+    return this.db.execute(text, args);
   }
 }
 

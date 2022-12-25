@@ -103,18 +103,23 @@ export class MySqlDatabase implements Database {
     return new Promise((resolve, reject) => {
       this.pool.getConnection((cnErr, cn) => {
         if (cnErr) reject(cnErr);
-
         cn.query(statement, args, (err, rows, fields) => {
           try {
             if (err) {
               reject(err);
               return;
             }
-
             const result = {
               info: {},
-              fields,
               rows: [],
+              fields: fields.map((field) => ({
+                name: field.name,
+                flags: field.flags,
+                type: field.type ?? (<any>field).columnType,
+                length: field.length ?? (<any>field).columnLength,
+                default: field.default,
+                // f: field,
+              })),
             };
 
             if (this.isResultSetHeader(rows)) {
