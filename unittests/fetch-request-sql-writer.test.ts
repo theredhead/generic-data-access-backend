@@ -7,6 +7,10 @@ describe('FetchRequestSQLWriter', () => {
       table: 'test',
       predicates: [],
       sort: [],
+      pagination: {
+        index: 0,
+        size: 0,
+      },
     };
 
     const writer = new FetchRequestSQLWriter();
@@ -52,6 +56,10 @@ describe('FetchRequestSQLWriter', () => {
           direction: 'DESC',
         },
       ],
+      pagination: {
+        index: 0,
+        size: 100,
+      },
     };
 
     const writer = new FetchRequestSQLWriter();
@@ -59,7 +67,7 @@ describe('FetchRequestSQLWriter', () => {
 
     expect(result.args.length).toBe(3);
     expect(result.text.replace(/(\n|\s\s)/g, ' ').trim()).toBe(
-      'SELECT * FROM test WHERE (one=?) AND ((foo=?) OR (bar=?)) ORDER BY foo ASC, baz DESC',
+      'SELECT * FROM test WHERE (one=?) AND ((foo=?) OR (bar=?)) ORDER BY foo ASC, baz DESC LIMIT 0, 100',
     );
   });
 });
