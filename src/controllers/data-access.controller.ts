@@ -46,6 +46,11 @@ export class DataAccessController {
     }
   }
 
+  @Get('table-names')
+  async tableNames(): Promise<any> {
+    return await this.db.getTableNames();
+  }
+
   @Get(':table/info')
   async tableInfo(@Param('table') table: string): Promise<any> {
     return await this.db.tableInfo(table);

@@ -7,12 +7,20 @@ import { MySqlDatabase } from './../data/mysql/mysql-database';
 export class DataAccessService {
   private db = new MySqlDatabase(databaseConfiguration);
 
+  async getTableNames(): Promise<any[]> {
+    const data = await this.db.execute(
+      'SELECT T.TABLE_NAME, T.TABLE_TYPE, T.TABLE_ROWS FROM INFORMATION_SCHEMA.TABLES T WHERE T.TABLE_SCHEMA=DATABASE() ORDER BY T.TABLE_TYPE ASC, T.TABLE_NAME ASC',
+    );
+
+    return data.rows;
+  }
+
   async tableInfo(table: string): Promise<any> {
     const data = await this.db.execute(
       `
-      SELECT *
+      SELECT C.*
       FROM INFORMATION_SCHEMA.TABLES T
-      INNER JOIN INFORMATION_SCHEMA.COLUMNS C ON C.TABLE_SCHEMA = T.TABLE_SCHEMA AND C.TABLE_NAME = C.TABLE_NAME
+      INNER JOIN INFORMATION_SCHEMA.COLUMNS C ON C.TABLE_SCHEMA = T.TABLE_SCHEMA AND C.TABLE_NAME = T.TABLE_NAME
       WHERE T.TABLE_NAME = ?
     `,
       [table],
